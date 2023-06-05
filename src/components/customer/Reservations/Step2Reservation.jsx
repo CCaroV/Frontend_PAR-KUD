@@ -1,4 +1,50 @@
-const Step2Reservation = ({ enableDiv, formData, onFormChange }) => {
+import { useState, useEffect } from "react";
+import axios from "../../../services/axiosconfig";
+
+const Step2Reservation = ({ enableDiv, formData, setForm,onFormChange }) => {
+  
+  const [info, setInfo] = useState([]);
+
+  const body = {
+    tipo_vehiculo_p:
+      formData.tipo_vehiculo_p === undefined ? null : formData.tipo_vehiculo_p,
+    ciudad_p:
+      formData.ciudad_p === undefined ? null : formData.ciudad_p,
+    es_parq_encubierto_p:
+      formData.es_parq_cubierto_p === undefined ? null : formData.es_parq_cubierto_p,
+      nombre_sucursal_p:
+      formData.nombre_sucursal_p === undefined ? null : formData.nombre_sucursal_p,
+  };
+
+
+  const ciudades = info.map((objeto) => objeto["Ciudad"]);
+
+  const ciudadesUnicas = ciudades.filter(
+    (ciudad, index) => ciudades.indexOf(ciudad) === index
+  );
+
+  const parkingsPetition = () => {
+    // console.log(body);
+    axios
+      .post("/cliente/sucursales", body)
+      .then((res) => {
+        setInfo(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+      setInfo([])
+      parkingsPetition();
+  }, [formData.ciudad_p, formData.nombre_sucursal_p, formData.es_parq_cubierto_p || undefined]);
+
+  const cleanFilters = () => {
+    setForm({ ...formData, es_parq_cubierto_p: "", ciudad_p:undefined , nombre_sucursal_p: undefined });
+    parkingsPetition();
+     };
+  
   return (
     <div
       id="form2"
@@ -24,33 +70,38 @@ const Step2Reservation = ({ enableDiv, formData, onFormChange }) => {
             <div className="divide-y divide-gray-200">
               <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                 <div className="flex items-center space-x-4">
-                  <div className="flex flex-col w-full">
-                    <label className="leading-loose">Ciudad</label>
-                    <select
-                      name="nombre_ciudad"
-                      value={formData.nombre_ciudad}
-                      onChange={onFormChange}
-                      className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                    >
-                      <option value="" selected>
-                        Selecciona una ciudad
-                      </option>
-                      <option value="Ciudad 1">Ciudad 1</option>
-                    </select>
-                  </div>
+                  
                   <div className="flex flex-col w-full">
                     <label className="leading-loose">
                       ¿Parqueadero cubierto?
                     </label>
                     <select
-                      name="es_cubierto"
-                      value={formData.es_cubierto}
+                      name="es_parq_cubierto_p"
+                      value={formData.es_parq_cubierto_p}
                       onChange={onFormChange}
                       className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     >
                       <option value="">Selecciona una opción</option>
-                      <option value={true}>Si</option>
-                      <option value={false}>No</option>
+                      <option value="true">Si</option>
+                      <option value="false">No</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <label className="leading-loose">Ciudad</label>
+                    <select
+                      name="ciudad_p"
+                      value={formData.ciudad_p}
+                      onChange={onFormChange}
+                      className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                    >
+                      <option value={undefined}>Selecciona una ciudad</option>
+                      {ciudadesUnicas.map((item, index) => {
+                        return (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 </div>
@@ -60,9 +111,9 @@ const Step2Reservation = ({ enableDiv, formData, onFormChange }) => {
                     <label className="leading-loose">Tipo de parqueadero</label>
                     <input
                       name="tipo_parqueadero"
-                      value={formData.tipo_vehiculo}
+                      value={formData.tipo_vehiculo_p}
                       type="text"
-                      class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                      className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                       placeholder="Parquedero"
                       disabled
                     />
@@ -70,41 +121,43 @@ const Step2Reservation = ({ enableDiv, formData, onFormChange }) => {
                   <div className="flex flex-col w-3/4">
                     <label className="leading-loose">Sucursal</label>
                     <select
-                      name="nombre_sucursal"
-                      value={formData.nombre_sucursal}
+                      name="nombre_sucursal_p"
+                      value={formData.nombre_sucursal_p}
                       onChange={onFormChange}
                       className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     >
-                      <option value="">
-                        Selecciona sucursal
-                      </option>
-                      <option value="Sucursal 1">
-                        Sucursal 1
-                      </option>
+                      <option value="">Selecciona sucursal</option>
+                      {info.map((item, index) => {
+                        return (
+                          <option key={index} value={item["Nombre sucursal"]}>
+                            {item["Nombre sucursal"]}
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 </div>
               </div>
-              <div class="pt-4 flex items-center space-x-4">
-                <button class="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none hover:bg-red hover:text-white">
+              <div className="pt-4 flex items-center space-x-4">
+                <button onClick={cleanFilters} className="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none hover:bg-red hover:text-white">
                   <svg
-                    class="w-6 h-6 mr-3"
+                    className="w-6 h-6 mr-3"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M6 18L18 6M6 6l12 12"
                     ></path>
                   </svg>{" "}
                   Limpiar filtros
                 </button>
                 <button
-                  class="bg-yellow flex justify-center items-center w-full text-black font-bold px-4 py-3 shadow rounded-md"
+                  className="bg-yellow flex justify-center items-center w-full text-black font-bold px-4 py-3 shadow rounded-md"
                   onClick={enableDiv("form3")}
                 >
                   Buscar

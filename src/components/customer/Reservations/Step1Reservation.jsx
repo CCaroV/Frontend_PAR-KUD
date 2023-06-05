@@ -1,4 +1,23 @@
+import { useEffect, useState } from "react";
+import axios from "../../../services/axiosconfig";
 const Step1Reservation = ({ enableDiv, formData, onFormChange }) => {
+  
+  const [vehicles, setVehicles] = useState([]);
+  const vehiclesPetition =()=>{
+    axios
+    .post('/cliente/vehiculos/tipo',{tipo_vehiculo_p:formData.tipo_vehiculo_p})
+    .then((res) => {
+      setVehicles(res.data);
+      // console.log(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+  useEffect(() => {
+    vehiclesPetition();
+  }, [formData.tipo_vehiculo_p])
+  
   return (
     <div className=" bg-gray-100 flex flex-col justify-center w-1/2">
       <div className="t-0 py-2 sm:max-w-2xl sm:mx-22">
@@ -21,16 +40,13 @@ const Step1Reservation = ({ enableDiv, formData, onFormChange }) => {
                   <div className="flex flex-col w-full">
                     <label className="leading-loose">Tipo de vehículo</label>
                     <select
-                      name="tipo_vehiculo"
-                      value={formData.tipo_vehiculo}
+                      name="tipo_vehiculo_p"
+                      value={formData.tipo_vehiculo_p}
                       onChange={onFormChange}
-                      required
                       className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     >
-                      <option value="" selected>
-                        Selecciona un tipo de vehículo
-                      </option>
-                      <option value="Automovil">Automóvil</option>
+                      <option value="">Selecciona un tipo de vehículo</option>
+                      <option value="Automóvil">Automóvil</option>
                       <option value="Moto">Moto</option>
                       <option value="SUV">SUV</option>
                     </select>
@@ -42,39 +58,40 @@ const Step1Reservation = ({ enableDiv, formData, onFormChange }) => {
                     Tus vehículos registrados
                   </label>
                   <select
-                    name="info_vehiculo"
-                    value={formData.info_vehiculo}
+                    name="marca_placa_vehiculo_p"
+                    value={formData.marca_placa_vehiculo_p}
                     onChange={onFormChange}
-                    required
                     className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                   >
-                    <option value="" selected>
-                      Selecciona {formData.tipo_vehiculo}
+                    <option value="">
+                      Selecciona {formData.tipo_vehiculo_p}
                     </option>
-                    <option value="Vehículo 1">Vehículo 1</option>
+                    {vehicles.map((vehicle,index)=>{
+                        return(<option key={index} value={vehicle['Vehículo']}>{vehicle['Vehículo']}</option>)
+                    })}
                   </select>
                 </div>
               </div>
-              <div class="pt-4 flex items-center space-x-4">
-                <button class="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none hover:bg-red hover:text-white">
+              <div className="pt-4 flex items-center space-x-4">
+                <button className="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none hover:bg-red hover:text-white">
                   <svg
-                    class="w-6 h-6 mr-3"
+                    className="w-6 h-6 mr-3"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M6 18L18 6M6 6l12 12"
                     ></path>
                   </svg>{" "}
                   Limpiar filtros
                 </button>
                 <button
-                  class="bg-yellow flex justify-center items-center w-full text-black font-bold px-4 py-3 shadow rounded-md"
+                  className="bg-yellow flex justify-center items-center w-full text-black font-bold px-4 py-3 shadow rounded-md"
                   onClick={enableDiv("form2")}
                 >
                   Continuar

@@ -1,5 +1,5 @@
-import LoginCard from "../components/general/LoginCard"
-import Footer from "../components/general/Footer"
+import LoginCard from "../components/general/Login/LoginCard"
+import Footer from "../components/general/Footer/Footer"
 
 
 const Login = () => {

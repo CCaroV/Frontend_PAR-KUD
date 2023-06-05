@@ -1,80 +1,82 @@
 
 export const infoSideBar=[
+    
     {
         id: "button-parkings",
         name :"Parqueaderos",
         page:"/Parkings",
         icon :"faLocationDot",
-        profile:['cliente','administrador','gerente']
+        profile:['USER_ROLE','ADMIN_ROLE','SUPER_ADMIN_ROLE']
     },
     {
-        id: "button-parkings",
-        name :"Sucursal",
+        id: "button-yourParking",
+        name :"Tu sucursal",
         icon :"faLocationDot",
         page: "/Subsidiary",
-        profile :['administrador','gerente']
+        profile :['ADMIN_ROLE']
     },
     {
         id: "button-addCar",
         name :"Registra tu vehículo",
         icon :"faCarSide",
         page: "/AddVehicle",
-        profile:['cliente']
-    },
-    {
-        id: "button-makeReservation",
-        name :"Reserva tu cupo",
-        icon :"faCirclePlus",
-        page: "/MakeReservation",
-        profile:['cliente']
-    },
-    {
-        id: "button-reservations",
-        name :"Tus reservas",
-        icon :"faRectangleList",
-        page: "/YourReservations",
-        profile:['cliente']
-    },
-    {
-        id: "button-vehicles",
-        name :"Vehículos registrados",
-        icon :"faTable",
-        page: "/YourVehicles",
-        profile:['cliente']
-    },
-    {
-        id: "button-cards",
-        name :"Registra tarjetas",
-        icon :"faCirclePlus",
-        page: "/RegisterCard",
-        profile:['cliente']
+        profile:['USER_ROLE']
     },
     {
         id: "button-statistics",
         name :"Estadísticas",
         icon :"faChartLine",
         page: "/Statistics",
-        profile:['administrador','gerente']
+        profile:['ADMIN_ROLE','SUPER_ADMIN_ROLE']
     },
+    {
+        id: "button-makeReservation",
+        name :"Reserva tu cupo",
+        icon :"faCirclePlus",
+        page: "/MakeReservation",
+        profile:['USER_ROLE']
+    },
+    {
+        id: "button-reservations",
+        name :"Tus reservas",
+        icon :"faRectangleList",
+        page: "/YourReservations",
+        profile:['USER_ROLE']
+    },
+    {
+        id: "button-vehicles",
+        name :"Vehículos registrados",
+        icon :"faTable",
+        page: "/YourVehicles",
+        profile:['USER_ROLE']
+    },
+    {
+        id: "button-cards",
+        name :"Registra tarjetas",
+        icon :"faCirclePlus",
+        page: "/RegisterCard",
+        profile:['USER_ROLE']
+    },
+   
     {
         id: "button-historial",
         name :"Historial",
         icon :"faAddressCard",
         page: "/Historial",
-        profile:['administrador']
+        profile:['ADMIN_ROLE','SUPER_ADMIN_ROLE']
     },
     {
         id: "button-registerCustomer",
         name :"Registrar cliente",
         icon :"faUserPlus",
         page: "/RegisterCustomer",
-        profile:['administrador']
+        profile:['ADMIN_ROLE']
     },
     {
         id: "button-logOut",
         name :"Cerrar sesión",
         icon :"faRightToBracket",
         page: "/",
-        profile :['cliente','administrador','gerente']
+        profile :['USER_ROLE','ADMIN_ROLE','SUPER_ADMIN_ROLE']
     }
 ]

@@ -1,12 +1,14 @@
 //Importaciones necesarias para el funcionamiento de componente
-import { showSuccessAlert,showErrorAlert} from "../../services/alertsconfig";
-import axios from "../../services/axiosconfig";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import axios from "axios";
 import { useState } from "react";
-import { sendEmail } from "../../services/Email";
+import { sendEmail } from "../../../services/Email";
 
-const RegisterCustomer = () => {
- 
-  
+const SignUpCard = () => {
+  // Declaración de variables
+  const urlRegistrarCliente = "https://par-kud.azurewebsites.net/cliente/registro";
+  const MySwal = withReactContent(Swal);
 
   // Declaración de States
   const [primerNombre, setPrimerNombre] = useState("");
@@ -17,6 +19,7 @@ const RegisterCustomer = () => {
   const [documento, setDocumento] = useState("");
   const [telefono, setTelefono] = useState("");
   const [correo, setCorreo] = useState("");
+  const [password, setPassword] = useState("");
 
   const templateParams = {
     email: correo,
@@ -63,8 +66,8 @@ const RegisterCustomer = () => {
     !succes ? console.log("Correo enviado") : console.log("No se pudo enviar el correo");
   };
 
-  const handleCancel = () =>{
-    showSuccessAlert('Registro de cliente cancelado','/RegisterCustomer')
+  const handleLogin = () =>{
+    window.location.href = '/';
   }
 
   //Función para realizar la petición
@@ -93,23 +96,36 @@ const RegisterCustomer = () => {
       console.log(objectData);
 
       axios
-        .post('/cliente/registro', objectData)
+        .post(urlRegistrarCliente, objectData)
         .then((response) => {
           const pass = response.data.join('');
           console.log(pass);
           templateParams.first_password=pass;
           console.log(templateParams);
           handleSendEmail();
-          showSuccessAlert('La contraseña fué enviada al correo de la cuenta','/RegisterCustomer');
+          MySwal.fire({
+            title: <strong>Registro completado</strong>,
+            html: <i>Tu contraseña fué enviada al correo de tu cuenta.</i>,
+            icon: "success",
+          });
+          //window.location.href = "/";
           // Realizar cualquier otra acción con la respuesta del servidor
         })
         .catch((error) => {
-          showErrorAlert('Hubo un error con tu registro')
-          // Manejar cualquier error que ocurra durante la petición
           console.log(error);
+          MySwal.fire({
+            title: <strong>Error</strong>,
+            html: <i>Hubo un error con tu registro</i>,
+            icon: "error",
+          });
+          // Manejar cualquier error que ocurra durante la petición
         });
     } else {
-      showErrorAlert('Debe rellenar todos lo campos')
+      MySwal.fire({
+        title: <strong>Error</strong>,
+        html: <i>Debe rellenar todos lo campos</i>,
+        icon: "error",
+      });
     }
   };
 
@@ -122,7 +138,7 @@ const RegisterCustomer = () => {
             <div className="max-w-md mx-auto">
               <div className="flex items-center space-x-5">
                 <div className="block pl-2 font-semibold text-xl self-start text-gray-700">
-                  <h2 className="leading-relaxed">Registra un cliente</h2>
+                  <h2 className="leading-relaxed">Registrate</h2>
                   <p className="text-sm text-gray-500 font-normal leading-relaxed">
                     Completa los siguientes campos.
                   </p>
@@ -233,7 +249,7 @@ const RegisterCustomer = () => {
                 <div className="pt-4 flex items-center space-x-4">
                   <button 
                     className="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none hover:bg-red hover:text-white"
-                    onClick={handleCancel}
+                    onClick={handleLogin}
                   >
                     <svg
                       className="w-6 h-6 mr-3"
@@ -267,4 +283,4 @@ const RegisterCustomer = () => {
   );
 };
 
-export default RegisterCustomer;
+export default SignUpCard;

@@ -1,8 +1,6 @@
-import axios from "axios"
+import axios from '../../../services/axiosconfig'
 import { useState, useEffect } from "react"
 import ParkingCard from "./ParkingCard"
-import Cookies from "js-cookie"
-
 
 const Parking = () => {
 
@@ -11,24 +9,9 @@ const Parking = () => {
   const [search, setSearch] = useState("")
   const [diaActual, setDiaActual] = useState('');
 
-  const token = Cookies.get('token');
-  console.log('token: ',token);
-
-
-  const test = () => {
-    axios.get('http://parkud.eastus.cloudapp.azure.com:5000/',
-      ).then(res => {
-        console.log(res.data);
-      }).catch(error => {
-        console.log(error);
-      })
-  }
 
   const parkingsPetition = () => {
-    axios.get('http://parkud.eastus.cloudapp.azure.com:5000/cliente/parqueaderos',{
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }}).then(res => {
+    axios.get('/cliente/parqueaderos').then(res => {
         setParkings(res.data);
         setParkingTable(res.data);
       }).catch(error => {
@@ -60,9 +43,10 @@ const Parking = () => {
       setDiaActual(nombreDia);
     };
 
+    
     obtenerDiaActual();
     parkingsPetition()
-    test();
+   
   }, [])
 
   

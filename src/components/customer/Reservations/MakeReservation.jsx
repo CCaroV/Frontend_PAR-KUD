@@ -1,65 +1,60 @@
+import axios from "../../../services/axiosconfig";
+import { useState } from "react";
 import Step1Reservation from "./Step1Reservation";
 import Step2Reservation from "./Step2Reservation";
 import Step3Reservation from "./Step3Reservation";
-
-import { useEffect, useState } from "react";
-import axios from "axios";
-
+import { showSuccessAlert,showErrorAlert} from "../../../services/alertsconfig";
 
 const MakeReservation = () => {
+  const [step3, setStep3] = useState(false);
   const [formReserva, setFormReserva] = useState({
-    tipo_vehiculo: null,
-    info_vehiculo: "",
-    es_cubierto: null,
-    nombre_ciudad: null,
-    nombre_sucursal: null,
-    direccion_sucursal: "",
-    fecha_reserva: "",
-    hora_reserva: "",
-    puntos_usados: null,
-    ultimos_cuatro_digitos: 0,
-    tipo_tarjeta: "",
-    nombre_duenio_tarjeta: "",
-    apellido_duenio_tarjeta: "",
+    tipo_vehiculo_p: undefined,
+    marca_placa_vehiculo_p: "",
+    es_parq_cubierto_p: undefined,
+    ciudad_p: undefined,
+    nombre_sucursal_p: undefined,
+    direccion_sucursal_p: "",
+    fecha_reserva_p: "",
+    hora_reserva_p: "",
+    ultimos_cuatro_digitos_p: "",
+    tipo_tarjeta_p: "",
+    nombre_duenio_tarjeta_p: "",
+    apellido_duenio_tarjeta_p: "",
+    puntos_usados_p: 0,
+    tarifa: "",
+    cvc:""
   });
 
-  const handleFormChange = (event) => {
-    const { name, value } = event.target;
-    setFormReserva((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+  const handleFormChange = (e) => {
+    setFormReserva({
+      ...formReserva,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const parkingsPetition = () => {
+  const reservationPetition = () => {
     axios
-      .get("ruta/", {
-        params: {
-          tipo_vehiculo: formReserva.tipo_vehiculo,
-          nombre_ciudad: formReserva.nombre_ciudad,
-          es_cubierto: formReserva.es_cubierto,
-          nombre_sucursal: formReserva.nombre_sucursal,
-        },
-      })
+      .post("/cliente/reservar", formReserva)
       .then((res) => {
-        console.log(res.data);
+        if (validarCVC()){
+          showSuccessAlert('Reserva registrada','/YourReservations')
+        }else {
+          showErrorAlert("Verifica tus datos.También tu CVC");
+        }
+        console.log(res);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    console.log('solicitar petición')
-    parkingsPetition();
-  }, [formReserva.nombre_ciudad,formReserva.nombre_sucursal,formReserva.es_cubierto])
-  
   const validarCVC = () => {
     let cvcRegex = /^[0-9]{3}$/;
-    return cvcRegex.test(ultimos_cuatro_digitos);
+    return cvcRegex.test(formReserva.cvc);
   };
 
   const enableDiv = (id) => () => {
+    if (id == "form3") {
+      setStep3(true);
+    }
     let div = document.getElementById(id);
     div.classList.remove("pointer-events-none");
     div.classList.remove("bg-gray-300");
@@ -67,16 +62,9 @@ const MakeReservation = () => {
   };
 
   const disableDiv = () => {
-    let div2 = document.getElementById("form2");
-    div2.classList.add("pointer-events-none");
-    div2.classList.add("bg-gray-300");
-    div2.classList.add("opacity-50");
-
-    let div3 = document.getElementById("form3");
-    div3.classList.add("pointer-events-none");
-    div3.classList.add("bg-gray-300");
-    div3.classList.add("opacity-50");
-  };
+    showSuccessAlert('Registro de reserva cancelado','/MakeReservation')
+    };
+  
 
   return (
     <>
@@ -89,6 +77,7 @@ const MakeReservation = () => {
         <Step2Reservation
           enableDiv={enableDiv}
           formData={formReserva}
+          setForm={setFormReserva}
           onFormChange={handleFormChange}
         />
       </div>
@@ -97,6 +86,9 @@ const MakeReservation = () => {
           disableDiv={disableDiv}
           formData={formReserva}
           onFormChange={handleFormChange}
+          setForm={setFormReserva}
+          valid={step3}
+          handleReservation={reservationPetition}
         />
       </div>
     </>

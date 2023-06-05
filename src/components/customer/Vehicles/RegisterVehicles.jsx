@@ -1,30 +1,30 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { getVehicleMarkings } from "../../../services/Vehicles/GetVehicleMarkings";
+import { showSuccessAlert,showErrorAlert} from "../../../services/alertsconfig";
+import axios from "../../../services/axiosconfig";
 
 const RegisterVehicles = () => {
   const [dataMarkings, setDataMarkings] = useState([]);
   const [formData, setFormData] = useState({
-    k_marca_vehiculo: "",
-    placa_vehiculo: "",
-    nombre1_propietario: "",
-    nombre2_propietario: "",
-    apellido1_propietario: "",
-    apellido2_propietario: "",
-    tipo_vehiculo: "",
-    color_vehiculo: "",
+    tipo_vehiculo_p: "",
+    placa_p: "",
+    nombre_1_p: "",
+    nombre_2_p: "",
+    apellido_1_p: "",
+    apellido_2_p: "",
+    marca_vehiculo_p: "",
+    color_vehiculo_p: "",
   });
 
-  useEffect(() => {
-    const getData = async () => {
-      const result = await getVehicleMarkings();
-      if (result) {
-        setDataMarkings(result);
-      }
-    };
-
-    getData();
-  }, []);
+  const getVehicleMarkings = () => {
+    axios
+      .get("/cliente/vehiculos/marcas")
+      .then((res) => {
+        setDataMarkings(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -35,42 +35,33 @@ const RegisterVehicles = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post("https://ejemplo.com/api/formulario/", formData)
+    const requiredFields = ['tipo_vehiculo_p', 'placa_p', 'nombre_1_p', 'apellido_1_p','apellido_2_p','marca_vehiculo_p', 'color_vehiculo_p'];
+    const isAllFilled = requiredFields.every((field) => formData[field].trim() !== '');
+    if(isAllFilled){
+      axios
+      .post("/cliente/registro/vehiculo", formData)
       .then((response) => {
-        alert("Vehículo registrado con éxito");
+        showSuccessAlert("Vehículo registrado con éxito", "/AddVehicle");
         console.log(response.data);
       })
       .catch((error) => {
-        alert("Hubo un error con el registro del vehículo");
+        showErrorAlert("Hubo un error con el registro del vehículo");
         console.error(error);
       });
-
-    setFormData({
-      placa_vehiculo: "",
-      nombre1_propietario: "",
-      nombre2_propietario: "",
-      apellido1_propietario: "",
-      apellido2_propietario: "",
-      tipo_vehiculo: "",
-      color_vehiculo: "",
-      k_marca_vehiculo: "",
-    });
+    } else {
+      showErrorAlert("Completa los campos");
+    }
+    
   };
 
   const handleCancel = () => {
-    alert("Registro de vehículo cancelado");
-    setFormData({
-      placa_vehiculo: "",
-      nombre1_propietario: "",
-      nombre2_propietario: "",
-      apellido1_propietario: "",
-      apellido2_propietario: "",
-      tipo_vehiculo: "",
-      color_vehiculo: "",
-      k_marca_vehiculo: "",
-    });
+    showSuccessAlert("Registro de vehículo cancelado", "/AddVehicle");
   };
+
+  useEffect(() => {
+    getVehicleMarkings();
+  }, []);
+
   return (
     <>
       <div className=" bg-gray-100 flex flex-col justify-center">
@@ -97,8 +88,8 @@ const RegisterVehicles = () => {
                       <div className="relative focus-within:text-gray-600 text-gray-400">
                         <input
                           type="text"
-                          name="nombre1_propietario"
-                          value={formData.nombre1_propietario}
+                          name="nombre_1_p"
+                          value={formData.nombre_1_p}
                           onChange={handleChange}
                           className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                           placeholder="Primer nombre"
@@ -110,8 +101,8 @@ const RegisterVehicles = () => {
                       <div className="relative focus-within:text-gray-600 text-gray-400">
                         <input
                           type="text"
-                          name="nombre2_propietario"
-                          value={formData.nombre2_propietario}
+                          name="nombre_2_p"
+                          value={formData.nombre_2_p}
                           onChange={handleChange}
                           className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                           placeholder="Segundo nombre"
@@ -125,8 +116,8 @@ const RegisterVehicles = () => {
                       <div className="relative focus-within:text-gray-600 text-gray-400">
                         <input
                           type="text"
-                          name="apellido1_propietario"
-                          value={formData.apellido1_propietario}
+                          name="apellido_1_p"
+                          value={formData.apellido_1_p}
                           onChange={handleChange}
                           className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                           placeholder="Primer apellido"
@@ -138,8 +129,8 @@ const RegisterVehicles = () => {
                       <div className="relative focus-within:text-gray-600 text-gray-400">
                         <input
                           type="text"
-                          name="apellido2_propietario"
-                          value={formData.apellido2_propietario}
+                          name="apellido_2_p"
+                          value={formData.apellido_2_p}
                           onChange={handleChange}
                           className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                           placeholder="Segundo apellido"
@@ -151,28 +142,26 @@ const RegisterVehicles = () => {
                   <div className="flex flex-col">
                     <label className="leading-loose">Tipo de vehículo</label>
                     <select
-                      name="tipo_vehiculo"
-                      value={formData.tipo_vehiculo}
+                      name="tipo_vehiculo_p"
+                      value={formData.tipo_vehiculo_p}
                       onChange={handleChange}
                       className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     >
-                      <option value="Automovil" selected>
-                        Automóvil
-                      </option>
+                      <option value="">Tipo de vehículo</option>
+                      <option value="Automóvil">Automóvil</option>
                       <option value="Moto">Moto</option>
                       <option value="SUV">SUV</option>
                     </select>
 
                     <label className="leading-loose">Color</label>
                     <select
-                      name="color_vehiculo"
-                      value={formData.color_vehiculo}
+                      name="color_vehiculo_p"
+                      value={formData.color_vehiculo_p}
                       onChange={handleChange}
                       className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     >
-                      <option value="Azul" selected>
-                        Azul
-                      </option>
+                      <option value="">Escoge un color</option>
+                      <option value="Azul">Azul</option>
                       <option value="Rojo">Rojo</option>
                       <option value="Amarillo">Amarillo</option>
                       <option value="Negro">Negro</option>
@@ -183,8 +172,8 @@ const RegisterVehicles = () => {
                     <label className="leading-loose">Placa</label>
                     <input
                       type="text"
-                      name="placa_vehiculo"
-                      value={formData.placa_vehiculo}
+                      name="placa_p"
+                      value={formData.placa_p}
                       onChange={handleChange}
                       className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                       placeholder="Placa"
@@ -194,18 +183,15 @@ const RegisterVehicles = () => {
                   <div className="flex flex-col">
                     <label className="leading-loose">Marca</label>
                     <select
-                      name="k_marca_vehiculo"
-                      value={formData.k_marca_vehiculo}
+                      name="marca_vehiculo_p"
+                      value={formData.marca_vehiculo_p}
                       onChange={handleChange}
                       className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     >
-                      <option value="" disabled hidden>
-                        {" "}
-                        Marca{" "}
-                      </option>
+                      <option value="">Escoge una marca</option>
                       {dataMarkings.map((item, index) => {
                         return (
-                          <option key={index} value={item[0]} selected>
+                          <option key={index} value={item[0]}>
                             {item[0]}{" "}
                           </option>
                         );

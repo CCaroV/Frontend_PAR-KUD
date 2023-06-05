@@ -3,7 +3,7 @@ import RegisterVehicles from '../components/customer/Vehicles/RegisterVehicles'
 import MakeReservation from '../components/customer/Reservations/MakeReservation';
 import YourReservations from '../components/customer/Reservations/YourReservations';
 import YourVehicles from '../components/customer/Vehicles/YourVehicles';
-import Historial from '../components/administration/Historial';
+import Historial from '../components/administration/HistorialUser/Historial';
 import Statistics from '../components/administration/Statistics';
 import RegisterCustomer from '../components/administration/RegisterCustomer';
 import RegisterCard from '../components/customer/CreditCard/RegisterCard';

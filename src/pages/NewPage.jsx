@@ -1,5 +1,5 @@
 import SideBar from "../components/general/SideBar/SideBar"
-import Footer from "../components/general/Footer"
+import Footer from "../components/general/Footer/Footer"
 import { useState } from "react";
 
 const NewPage = (Component) => {

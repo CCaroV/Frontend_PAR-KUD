@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {iconos} from "../../../data/iconsSideBar"
+import Cookies from "js-cookie";
 
 const ItemSideBar = ({ info }) => {
     const navigate = useNavigate();
     const handleRedirect= (page)=>{
         if(page =='/'){
-            window.location.href = page;
+            localStorage.removeItem('rol');
+            Cookies.remove('token');
+            window.location.href = page; 
         } else {
             navigate(page);
         }

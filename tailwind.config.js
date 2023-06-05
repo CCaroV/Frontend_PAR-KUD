@@ -10,7 +10,11 @@ export default {
         'yellow': '#FFE925',
         'blue': '#2563EB',
         'gray': '#475569',
-        'red': '#FF0F0F'
+        'red': '#FF0F0F',
+        'green': '#22c55e',
+        'ligthBlue':'#0ea5e9',
+        'purple':'#a21caf',
+        'orange':'#f97316'
       },
       fontFamily: {
         'title': ['Libre Franklin','sans-serif'],
